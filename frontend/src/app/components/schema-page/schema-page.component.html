@@ -1,0 +1,31 @@
+<div class="schema-container">
+  <h1>Database Design (Relational Schema)</h1>
+  <p class="subtitle">CS 348 Stage 2 Deliverable: Database Tables, Primary Keys, and Foreign Keys.</p>
+
+  <div class="tables-grid">
+    <div *ngFor="let table of tables" class="glass-panel table-card">
+      <h2>{{ table.name }}</h2>
+      <p class="table-desc">{{ table.description }}</p>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Column Name</th>
+            <th>Data Type</th>
+            <th>Keys</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let col of table.columns" [class.pk-row]="col.key === 'PK'" [class.fk-row]="col.key.startsWith('FK')">
+            <td><strong>{{ col.name }}</strong></td>
+            <td><code>{{ col.type }}</code></td>
+            <td>
+              <span class="key-badge pk-badge" *ngIf="col.key === 'PK'">PK</span>
+              <span class="key-badge fk-badge" *ngIf="col.key.startsWith('FK')">{{ col.key }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

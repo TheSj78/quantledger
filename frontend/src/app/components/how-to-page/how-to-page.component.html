@@ -1,0 +1,21 @@
+<div class="how-to-container">
+  <h1>How QuantLedger Works</h1>
+  <div class="glass-panel">
+    <h2>The Goal</h2>
+    <p>QuantLedger is an algorithmic backtesting engine designed to track complex trading data using a transactional Postgres database. It allows quantitative researchers to configure text-based trading rules and simulate them against market data.</p>
+    
+    <h2>1. Creating Strategies</h2>
+    <p>A <strong>Strategy</strong> maps an Owner, a Stock Ticker, an initial capitalization budget, and two core rules:</p>
+    <ul>
+      <li><strong>Buy Rule:</strong> Conditions under which the algorithm purchases shares (e.g., <code>"PRICE <= 50 AND RSI < 30"</code>).</li>
+      <li><strong>Sell Rule:</strong> Conditions under which the algorithm dumps shares (e.g., <code>"PRICE >= 100"</code>).</li>
+    </ul>
+
+    <h2>2. Running Simulations (Randomized MVP)</h2>
+    <p>When you generate a Backtest Report, the backend parses that strategy and tests it across historical data. <br><br>
+    <em><strong>Important Note:</strong> For the purposes of this MVP Database Demo, our backend Java engine executes randomized algorithm behavior (random trades and volatility). This guarantees the Trade Ledger and Simulations tables are filled with dynamic, volatile data so we can test the database aggregates accurately.</em> <br><br>This is why running the same strategy simulation multiple times produces different results! You are simulating a stochastic market environment.</p>
+    
+    <h2>3. The Trade Ledger</h2>
+    <p>Every mock execution is recorded meticulously into the <strong>Trade_Ledger</strong> table, preserving a perfect transaction audit trail of all actions the engine took.</p>
+  </div>
+</div>

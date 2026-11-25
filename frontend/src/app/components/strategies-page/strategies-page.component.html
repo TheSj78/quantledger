@@ -1,0 +1,109 @@
+<div class="strategies-container">
+  <div class="header-actions">
+    <div>
+      <h1>Strategy Manager</h1>
+      <p class="subtitle">CS 348 Req 1: Add, edit, and delete strategies.</p>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <!-- CRUD Form (Left Column) -->
+    <div class="glass-panel form-panel">
+      <h2>{{ isEditing ? 'Edit Strategy' : 'Create New Strategy' }}</h2>
+      
+      <div class="form-group">
+        <label for="name">Strategy Name *</label>
+        <input type="text" id="name" [(ngModel)]="currentStrategy.name" placeholder="e.g. RSI Momentum" autocomplete="off">
+      </div>
+
+      <!-- CS 348 Req 2c: Dynamically populated dropdowns -->
+      <div class="form-group">
+        <label for="user">Owner (Dynamic User List) *</label>
+        <select id="user" [(ngModel)]="currentStrategy.user.id">
+          <option [ngValue]="0" disabled>Select User</option>
+          <option *ngFor="let user of users" [ngValue]="user.id">{{ user.username }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="ticker">Target Ticker (Symbol List) *</label>
+        <select id="ticker" [(ngModel)]="currentStrategy.ticker.symbol">
+          <option [ngValue]="''" disabled>Select Ticker</option>
+          <option *ngFor="let t of tickers" [ngValue]="t.symbol">{{ t.symbol }} - {{ t.companyName }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="budget">Initial Capital *</label>
+        <input type="number" id="budget" [(ngModel)]="currentStrategy.initialBudget">
+      </div>
+
+      <div class="form-group">
+        <label title="e.g. 'PRICE <= 50 AND RSI < 30'. Conditions that must be met for the algorithm to purchase stock.">
+          Buy Rule <span style="cursor: help;">&#10067;</span>
+        </label>
+        <input type="text" [(ngModel)]="currentStrategy.buyRule" name="buyRule" placeholder="e.g. PRICE < 50" required>
+      </div>
+      <div class="form-group">
+        <label title="e.g. 'PRICE >= 100'. Conditions under which the algorithm dumps active shares.">
+          Sell Rule <span style="cursor: help;">&#10067;</span>
+        </label>
+        <input type="text" [(ngModel)]="currentStrategy.sellRule" name="sellRule" placeholder="e.g. PRICE > 100" required>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn" (click)="saveStrategy()">{{ isEditing ? 'Update Strategy' : 'Add Strategy' }}</button>
+        <button class="btn btn-danger" *ngIf="isEditing" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Data Table (Right/Bottom Column) -->
+    <div class="glass-panel table-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <h2 style="margin: 0;">Active Strategies</h2>
+        
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <select [(ngModel)]="filterUserId" (change)="applyFilters()" style="min-width: 140px; padding: 0.4rem;">
+            <option [ngValue]="0">All Owners</option>
+            <option *ngFor="let u of users" [ngValue]="u.id">{{ u.username }}</option>
+          </select>
+          <select [(ngModel)]="filterTicker" (change)="applyFilters()" style="min-width: 140px; padding: 0.4rem;">
+            <option [ngValue]="''">All Tickers</option>
+            <option *ngFor="let t of tickers" [ngValue]="t.symbol">{{ t.symbol }}</option>
+          </select>
+          <button class="btn btn-secondary" (click)="clearFilters()" *ngIf="filterUserId !== 0 || filterTicker !== ''" style="padding: 0.4rem 0.8rem;">Clear</button>
+        </div>
+      </div>
+      
+      <div *ngIf="strategies.length === 0" class="empty-state">
+        No strategies found. Create one to get started!
+      </div>
+
+      <table *ngIf="strategies.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Ticker</th>
+            <th>Budget</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of strategies">
+            <td>#{{ s.id }}</td>
+            <td><strong>{{ s.name }}</strong></td>
+            <td>{{ s.user.username }}</td>
+            <td><span class="ticker-badge">{{ s.ticker.symbol }}</span></td>
+            <td>{{ s.initialBudget | currency }}</td>
+            <td class="action-cell">
+              <button class="btn-icon" (click)="editStrategy(s)" title="Edit">✏️</button>
+              <button class="btn-icon delete" (click)="s.id !== undefined && deleteStrategy(s.id)" title="Delete">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

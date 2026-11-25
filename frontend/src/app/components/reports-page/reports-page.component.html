@@ -1,0 +1,101 @@
+<div class="reports-container">
+  <div class="header-actions">
+    <div>
+      <h1>Backtest Reports (Simulation)</h1>
+      <p class="subtitle">CS 348 Req 2: Filter data, execute simulation, and show results.</p>
+    </div>
+  </div>
+
+  <div class="glass-panel filters-panel">
+    <div class="filter-group">
+      <label for="strategySelect">Select Strategy</label>
+      <select id="strategySelect" [(ngModel)]="selectedStrategyId">
+        <option [ngValue]="0" disabled>-- Choose a Strategy --</option>
+        <option *ngFor="let s of strategies" [ngValue]="s.id">
+          {{ s.name }} ({{ s.ticker.symbol }}) - by {{ s.user.username }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group date-filters">
+      <div>
+        <label for="startDate">Start Date</label>
+        <input type="date" id="startDate" [(ngModel)]="startDate">
+      </div>
+      <div>
+        <label for="endDate">End Date</label>
+        <input type="date" id="endDate" [(ngModel)]="endDate">
+      </div>
+    </div>
+
+    <button class="btn run-btn" (click)="runSimulation()" [disabled]="isLoading">
+      {{ isLoading ? 'Simulating...' : 'Run Simulation' }}
+    </button>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-container" *ngIf="currentRun">
+    
+    <!-- Aggregate KPI Report -->
+    <div class="glass-panel kpi-panel">
+      <h2>Simulation Summary (Run #{{ currentRun.id }})</h2>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Strategy</span>
+          <span class="kpi-value">{{ currentRun.strategy.name }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Final Balance</span>
+          <span class="kpi-value" [class.positive]="currentRun.finalBalance >= currentRun.strategy.initialBudget" [class.negative]="currentRun.finalBalance < currentRun.strategy.initialBudget">
+            {{ currentRun.finalBalance | currency }}
+          </span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Total Return</span>
+          <span class="kpi-value" [class.positive]="currentRun.totalReturnPct > 0" [class.negative]="currentRun.totalReturnPct < 0">
+            {{ currentRun.totalReturnPct }}%
+          </span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Total Trades</span>
+          <span class="kpi-value">{{ trades.length }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trade Ledger Data -->
+    <div class="glass-panel trade-ledger-panel">
+      <h2>Execution Ledger (Trades)</h2>
+      
+      <div *ngIf="trades.length === 0" class="empty-state">
+        No trades generated during this period.
+      </div>
+
+      <table *ngIf="trades.length > 0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Exec Price</th>
+            <th>Total Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of trades">
+            <td>{{ t.executionDate }}</td>
+            <td>
+              <span class="trade-type" [class.buy]="t.tradeType === 'BUY'" [class.sell]="t.tradeType === 'SELL'">
+                {{ t.tradeType }}
+              </span>
+            </td>
+            <td>{{ t.quantity }}</td>
+            <td>{{ t.price | currency }}</td>
+            <td>{{ t.price * t.quantity | currency }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

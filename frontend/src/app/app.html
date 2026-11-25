@@ -1,0 +1,18 @@
+<div class="app-container">
+  <nav class="navbar">
+    <div class="logo-container">
+      <div class="logo">QuantLedger<span class="dot">.</span></div>
+      <div class="system-badge"><div class="pulse"></div> SYSTEM ONLINE</div>
+    </div>
+    <ul class="nav-links">
+      <li><a routerLink="/strategies" routerLinkActive="active">Strategy Manager</a></li>
+      <li><a routerLink="/reports" routerLinkActive="active">Backtest Reports</a></li>
+      <li><a routerLink="/schema" routerLinkActive="active">DB Schema</a></li>
+      <li><a routerLink="/how-to" routerLinkActive="active">How It Works</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
